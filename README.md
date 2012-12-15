@@ -1,4 +1,4 @@
 yfinancefetcher
 ===============
 
-A python class to extract current and historical data from famous Yahoo Finance API
+A Python class to extract current and historical stock data from famous Yahoo Finance API.
