@@ -12,7 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class yfinancequery :
+#
+# This class builds the URL using Yahoo conventions.
+#
+
+class YFinanceQuery :
 
   HIST_BASE_URL = "http://ichart.finance.yahoo.com/table.csv?s=_SYMBOL_&a=_M1_&b=_D1_&c=_Y1_&d=_M2_&e=_D2_&f=_Y2_&g=_TYPE_&ignore=.csv"
   BASE_URL="http://finance.yahoo.com/d/quotes.csv?s="
@@ -25,10 +29,10 @@ class yfinancequery :
   def queryStock (self, symbols, attr):
     baseUrl = self.BASE_URL
     baseUrl += symbols
-    options = self.parseAttr(attr);
+    options = self.__parseAttr(attr);
     return baseUrl + options
 
-  def parseAttr (self, attr):
+  def __parseAttr (self, attr):
     tokens = attr.split(",")
     elems = "&f="
     for str in tokens:
@@ -41,9 +45,9 @@ class yfinancequery :
 
   # Date params are in format dd/mm/yyyy
   def getHist (self, symbol, startDate, endDate, type):   # type = d daily, w weekly, m monthly, v dividend
-      return self.buildHistURL (symbol, startDate, endDate, type)
+      return self.__buildHistURL (symbol, startDate, endDate, type)
 
-  def buildHistURL (self, symbol, startDate, endDate, type):
+  def __buildHistURL (self, symbol, startDate, endDate, type):
     symbol_url = self.HIST_BASE_URL.replace("_SYMBOL_", symbol)
     date1 = startDate.split("/")
     date2 = endDate.split("/")

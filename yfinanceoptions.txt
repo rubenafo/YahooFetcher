@@ -14,7 +14,7 @@
 
 This file based on the descriptions from in http://www.gummy-stuff.org/Yahoo-data.htm , containing
 some other new attributes found on the Web.
-The first column contains the attributes passed as first parameter to the getStock() function.
+The first column contains the attributes passed as last parameter to the getStock() function.
 
 a 	Ask 	
 a2 	Average Daily Volume 	

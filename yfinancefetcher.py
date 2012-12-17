@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 # Copyright 2012 Ruben Afonso, http://www.figurebelow.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +16,25 @@ import csv;
 import urllib2;
 import yfinancequery;
 
+#
+# This class invokes a query builder, fetches the content from the received URL
+# and returns the result
+#
+
 class YFinanceFetcher:
 
   def __init__(self):
     None
 
+  # Gets historical data.
+  # - symbol: an list of stock symbols, e.g. 'GOOG,MICRO'
+  # - starDate: starting date, e.g 12/5/2012 for 12th of May of 2012
+  # - endDate: end date
+  # - info: interval time. Accepted values:
+  #   d daily, w weekly, m monthly, v dividends, and d+v for daily data and dividends
+  #
   def getHist (self, symbol, startDate, endDate, info):
-    query = yfinancequery.yfinancequery ()
+    query = yfinancequery.YFinanceQuery ()
     if (info == "d+v"):
       url_daily = urllib2.urlopen (query.getHist(symbol, startDate, endDate, "d"))
       table_daily = csv.reader (url_daily.read().splitlines())
@@ -46,19 +56,20 @@ class YFinanceFetcher:
             rowdaily.append (0)
       return table_daily
     else:
-      url = urllib2.urlopen (query.getHist(symbol, startDate, endDate, info));
-      table = csv.DictReader (url.read().splitlines())
-      return table
+      if (info in ['w','m','d']):
+        url = urllib2.urlopen (query.getHist(symbol, startDate, endDate, info));
+        table = csv.reader (url.read().splitlines())
+        return table
+      else:
+        print "Error: invalid time option in getHist(): " + info
+        return []
 
+  # Gets current stock data.
+  # - attr: list of stock symbols e.g. 'GOOG,MICRO'
+  # - symbols:
   def getStock (self, attr, symbols):
-    query = yfinancequery.yfinancequery ()
+    query = yfinancequery.YFinanceQuery ()
     url = query.queryStock (attr, symbols)
     urldata = urllib2.urlopen (url)
     return list(csv.reader (urldata.read().splitlines()))
 
-fetcher = YFinanceFetcher ()
-f = fetcher.getHist ('BME.MC','1/01/2012', '1/12/2012', 'd+v')   # d, w, m, v, d+v
-for row in f:
-  print row
-
-print fetcher.getStock ('GOOG,WU','a4d1nn4bcd')
