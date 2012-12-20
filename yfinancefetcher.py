@@ -26,14 +26,25 @@ class YFinanceFetcher:
   def __init__(self):
     None
 
+  def __appendSymbol (self, table, symbol, append):
+    if (append == True):
+      table[0].insert(0,"Symbol")
+      for row in table[1:]:
+        row.insert(0, symbol)
+
+  def __appendHeader (self, table, keepHeader):
+      if (keepHeader == False):
+        table.pop(0)
+
   # Gets historical data.
   # - symbol: an list of stock symbols, e.g. 'GOOG,MICRO'
   # - starDate: starting date, e.g 12/5/2012 for 12th of May of 2012
   # - endDate: end date
   # - info: interval time. Accepted values:
   #   d daily, w weekly, m monthly, v dividends, and d+v for daily data and dividends
-  #
-  def getHist (self, symbol, startDate, endDate, info):
+  # - appendSymbol: whether each row must contain the symbol at the begining
+  # - keepHeader: whether the first row is the description header
+  def getHist (self, symbol, startDate, endDate, info, appendSymbol, appendHeader):
     query = yfinancequery.YFinanceQuery ()
     if (info == "d+v"):
       url_daily = urllib2.urlopen (query.getHist(symbol, startDate, endDate, "d"))
@@ -54,11 +65,16 @@ class YFinanceFetcher:
               break
           if (hasdiv == False):
             rowdaily.append (0)
+      self.__appendSymbol (table_daily, symbol, appendSymbol)
+      self.__appendHeader (table_daily, appendHeader)
       return table_daily
     else:
       if (info in ['w','m','d']):
         url = urllib2.urlopen (query.getHist(symbol, startDate, endDate, info));
         table = csv.reader (url.read().splitlines())
+        table = list(table)
+        self.__appendSymbol(table, symbol, appendSymbol)
+        self.__appendHeader(table, appendHeader)
         return table
       else:
         print "Error: invalid time option in getHist(): " + info
