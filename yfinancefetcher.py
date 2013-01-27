@@ -44,6 +44,11 @@ class YFinanceFetcher:
   #   d daily, w weekly, m monthly, v dividends, and d+v for daily data and dividends
   # - appendSymbol: whether each row must contain the symbol at the begining
   # - keepHeader: whether the first row is the description header
+  #
+  # Returned values:
+  #  a list of lists where each one has the following columns:
+  #  Symbol (optiona), Date, Open, High, Low, Close, Volume, Adj Close, Dividends(optional)
+  #
   def getHist (self, symbol, startDate, endDate, info, appendSymbol, appendHeader):
     query = yfinancequery.YFinanceQuery ()
     if (info == "d+v"):
