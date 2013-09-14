@@ -36,7 +36,7 @@ class YFinanceFetcher:
       if (keepHeader == False):
         table.pop(0)
 
-  # Gets historical data.
+  # Gets historical data in _table_ format.
   # - symbol: an list of stock symbols, e.g. 'GOOG,MICRO'
   # - starDate: starting date, e.g 12/5/2012 for 12th of May of 2012
   # - endDate: end date
@@ -46,8 +46,8 @@ class YFinanceFetcher:
   # - keepHeader: whether the first row is the description header
   #
   # Returned values:
-  #  a list of lists where each one has the following columns:
-  #  Symbol (optiona), Date, Open, High, Low, Close, Volume, Adj Close, Dividends(optional)
+  #  a list of lists where each one has the following elements:
+  #  Symbol (optional), Date, Open, High, Low, Close, Volume, Adj Close, Dividends(optional)
   #
   def getHist (self, symbol, startDate, endDate, info, appendSymbol, appendHeader):
     query = yfinancequery.YFinanceQuery ()
@@ -85,10 +85,41 @@ class YFinanceFetcher:
         print "Error: invalid time option in getHist(): " + info
         return []
 
+  # Gets historical data as CSV
+  # - symbol: an list of stock symbols, e.g. 'GOOG,MICRO'
+  # - starDate: starting date, e.g 12/5/2012 for 12th of May of 2012
+  # - endDate: end date
+  # - info: interval time. Accepted values:
+  #      d daily, w weekly, m monthly, v dividends, and d+v for daily data and dividends
+  #
+  # Returned values:
+  #  a list of JSON elements where each one has the following fields:
+  #     * 'sym': symbol,
+  #     * 'd': date,
+  #     * 'o': open,
+  #     * 'h': high,
+  #     * 'l': low,
+  #     * 'c': close,
+  #     * 'v': volume,
+  #     * 'ac': adjusted close,
+  #     * 'dv': dividends (optional)
+  #
+  def getHistAsJson (self, symbol, startDate, endDate, info):
+    data = self.getHist (symbol, startDate, endDate, info, True, False)
+    jsonList = [];
+    for elem in data:
+      json = {'sym': elem[0], 'd': elem[1], 'o': elem[2], 'h': elem[3], \
+          'l': elem[4], 'c': elem[5], 'v': elem[6], 'ac':elem[7]};
+      if (len(elem) == 9): # contains dividens
+        json['dv'] = elem[8]
+      jsonList.append(json)
+    return jsonList
+
+
   # Gets current stock data.
-  # - attr: list of stock symbols e.g. 'GOOG,MICRO'
-  # - symbols:
-  def getStock (self, attr, symbols):
+  # - symbol: list of stock symbols e.g. 'GOOG,MICRO'
+  # - attr: a list of attributes to get as described in the file 'yfinanceoptions.txt'
+  def getStock (self, symbols, attr):
     query = yfinancequery.YFinanceQuery ()
     url = query.queryStock (attr, symbols)
     urldata = urllib2.urlopen (url)
