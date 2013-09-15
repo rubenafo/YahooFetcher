@@ -6,4 +6,4 @@
 *.rel
 *.rst
 *.sym
-
+*.pyc
