@@ -15,6 +15,7 @@
 import csv;
 import urllib2;
 import yfinancequery;
+from urllib2 import *;
 
 #
 # This class invokes a query builder, fetches the content from the received URL
@@ -52,27 +53,30 @@ class YFinanceFetcher:
   def getHist (self, symbol, startDate, endDate, info, appendSymbol, appendHeader):
     query = yfinancequery.YFinanceQuery ()
     if (info == "d+v"):
-      url_daily = urllib2.urlopen (query.getHist(symbol, startDate, endDate, "d"))
-      table_daily = csv.reader (url_daily.read().splitlines())
-      url_div = urllib2.urlopen (query.getHist(symbol, startDate, endDate, "v"))
-      table_div = csv.reader (url_div.read().splitlines())
-      table_daily = list(table_daily)
-      table_div = list(table_div)
-      if (len(table_div) > 0):
-        for rowdaily in table_daily:
-          hasdiv = False
-          for rowdiv in table_div:
-            # matching dates? This also matches the headers, adding
-            # automagically the 'Dividends' column ...
-            if (rowdaily[0] == rowdiv[0]):
-              rowdaily.append(rowdiv[1])
-              hasdiv = True
-              break
-          if (hasdiv == False):
-            rowdaily.append (0)
-      self.__appendSymbol (table_daily, symbol, appendSymbol)
-      self.__appendHeader (table_daily, appendHeader)
-      return table_daily
+      try:
+        url_daily = urllib2.urlopen (query.getHist(symbol, startDate, endDate, "d"))
+        table_daily = csv.reader (url_daily.read().splitlines())
+        url_div = urllib2.urlopen (query.getHist(symbol, startDate, endDate, "v"))
+        table_div = csv.reader (url_div.read().splitlines())
+        table_daily = list(table_daily)
+        table_div = list(table_div)
+        if (len(table_div) > 0):
+          for rowdaily in table_daily:
+            hasdiv = False
+            for rowdiv in table_div:
+              # matching dates? This also matches the headers, adding
+              # automagically the 'Dividends' column ...
+              if (rowdaily[0] == rowdiv[0]):
+                rowdaily.append(rowdiv[1])
+                hasdiv = True
+                break
+            if (hasdiv == False):
+              rowdaily.append (0)
+        self.__appendSymbol (table_daily, symbol, appendSymbol)
+        self.__appendHeader (table_daily, appendHeader)
+        return table_daily
+      except HTTPError: # yahoo returns a 404, sometimes happens
+        return []
     else:
       if (info in ['w','m','d']):
         url = urllib2.urlopen (query.getHist(symbol, startDate, endDate, info));
