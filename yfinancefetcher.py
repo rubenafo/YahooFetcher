@@ -112,7 +112,9 @@ class YFinanceFetcher:
     data = self.getHist (symbol, startDate, endDate, info, True, False)
     jsonList = [];
     for elem in data:
-      json = {'sym': elem[0], 'd': elem[1], 'o': elem[2], 'h': elem[3], \
+      dateSplit = elem[1].split("-")
+      newDate = dateSplit[2] + "/" + dateSplit[1] + "/" + dateSplit[0]
+      json = {'sym': elem[0], 'd': newDate, 'o': elem[2], 'h': elem[3], \
           'l': elem[4], 'c': elem[5], 'v': elem[6], 'ac':elem[7]};
       if (len(elem) == 9): # contains dividens
         json['dv'] = elem[8]
