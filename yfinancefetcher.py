@@ -37,6 +37,23 @@ class YFinanceFetcher:
       if (keepHeader == False):
         table.pop(0)
 
+  #
+  # Converts default Yahoo Finance date format (yyyy-mm-dd)
+  # to dd/mm/yyyy
+  #
+  def __convertDates (self, table, hasHeader, initBySymbol):
+    firstRow = 0
+    firstCol = 0
+    if hasHeader:
+      firstRow = 1
+    if initBySymbol:
+      firstCol = 1
+    for row in table[firstRow:]:
+      dateSplit = row[firstCol].split("-")
+      newDate = dateSplit[2] + "/" + dateSplit[1] + "/" + dateSplit[0]
+      row[firstCol] = newDate
+
+
   # Gets historical data in _table_ format.
   # - symbol: an list of stock symbols, e.g. 'GOOG,MICRO'
   # - starDate: starting date, e.g 12/5/2012 for 12th of May of 2012
@@ -74,20 +91,30 @@ class YFinanceFetcher:
               rowdaily.append (0)
         self.__appendSymbol (table_daily, symbol, appendSymbol)
         self.__appendHeader (table_daily, appendHeader)
+        self.__convertDates (table_daily, appendHeader, appendSymbol)
         return table_daily
-      except HTTPError: # yahoo returns a 404, sometimes happens
+      except HTTPError: # yahoo returns a 404, sometimes it happens
+        return []
+      except URLError: # if for example there is no internet access
         return []
     else:
       if (info in ['w','m','d']):
-        url = urllib2.urlopen (query.getHist(symbol, startDate, endDate, info));
-        table = csv.reader (url.read().splitlines())
-        table = list(table)
-        self.__appendSymbol(table, symbol, appendSymbol)
-        self.__appendHeader(table, appendHeader)
-        return table
+        try:
+          url = urllib2.urlopen (query.getHist(symbol, startDate, endDate, info));
+          table = csv.reader (url.read().splitlines())
+          table = list(table)
+          self.__appendSymbol(table, symbol, appendSymbol)
+          self.__appendHeader(table, appendHeader)
+          self.__convertDates(table, appendHeader, appendSymbol)
+          return table
+        except HTTPError: # yahoo returns a 404, sometimes it happens
+          return []
+        except URLError: # if for example there is no internet access
+          return []
       else:
-        print "Error: invalid time option in getHist(): " + info
-        return []
+          print "Error: invalid time option in getHist(): " + info
+          return []
+
 
   # Gets historical data as CSV
   # - symbol: an list of stock symbols, e.g. 'GOOG,MICRO'
@@ -112,11 +139,9 @@ class YFinanceFetcher:
     data = self.getHist (symbol, startDate, endDate, info, True, False)
     jsonList = [];
     for elem in data:
-      dateSplit = elem[1].split("-")
-      newDate = dateSplit[2] + "/" + dateSplit[1] + "/" + dateSplit[0]
-      json = {'sym': elem[0], 'd': newDate, 'o': elem[2], 'h': elem[3], \
+      json = {'sym': elem[0], 'd': elem[1], 'o': elem[2], 'h': elem[3], \
           'l': elem[4], 'c': elem[5], 'v': elem[6], 'ac':elem[7]};
-      if (len(elem) == 9): # contains dividens
+      if (len(elem) == 9): # contains dividends
         json['dv'] = elem[8]
       jsonList.append(json)
     return jsonList
