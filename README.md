@@ -12,3 +12,23 @@ of it and all existent information has been obtained through reverse engineering
 However it is a well-known API in the finance world.<br>
 Real-time data is not guaranteed to be so real, rest of the values usually are delayed.<br>
 Use at your own risk and do not abuse Yahoo resources.
+
+Example
+=======
+Run sampleMSFT.py to fetch Microsoft shares for first fourth monts of 2017:
+```python
+#!/usr/bin/python
+
+import yfinancefetcher
+
+y = yfinancefetcher.YFinanceFetcher()
+hist = y.getHistAsJson ('MSFT','1/1/2017','15/4/2017','d+v')
+for row in hist:
+    print rowds
+```
+The output will look like this:
+```javascript
+{'o': '65.290001', 'c': '64.949997', 'd': '13/04/2017', 'v': '17755800', 'dv': 0, 'h': '65.860001', 'ac': '64.949997', 'l': '64.949997', 'sym': 'MSFT'}
+...
+{'o': '65.290001', 'c': '64.949997', 'd': '13/04/2017', 'v': '17755800', 'dv': 0, 'h': '65.860001', 'ac': '64.949997', 'l': '64.949997', 'sym': 'MSFT'}
+```
