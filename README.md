@@ -1,4 +1,4 @@
-YFinanceFetcher
+YahooFetcher
 ===============
 
 A Python class to extract current and historical stock data from famous Yahoo Finance API.
@@ -19,9 +19,9 @@ Run sampleMSFT.py to fetch Microsoft shares for first fourth monts of 2017:
 ```python
 #!/usr/bin/python
 
-import yfinancefetcher
+import YahooFetcher
 
-y = yfinancefetcher.YFinanceFetcher()
+y = YahooFetcher.YahooFetcher()
 hist = y.getHistAsJson ('MSFT','1/1/2017','15/4/2017','d+v')
 for row in hist:
     print rowds

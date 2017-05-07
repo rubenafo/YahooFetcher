@@ -1,1 +1,1 @@
-from yfinancefetcher import *
+from YahooFetcher import *

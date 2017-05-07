@@ -22,7 +22,7 @@ from urllib2 import *;
 # and returns the result
 #
 
-class YFinanceFetcher:
+class YahooFetcher:
 
   def __init__(self):
     None
