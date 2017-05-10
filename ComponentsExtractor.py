@@ -10,7 +10,6 @@
 from bs4 import BeautifulSoup
 import urllib3
 
-
 class ComponentsExtractor:
 
   BASE_URL="https://finance.yahoo.com/quote/^_INDEX_/components?p=^_INDEX_"
@@ -23,5 +22,8 @@ class ComponentsExtractor:
     queryURL = self.BASE_URL.replace ("_INDEX_", index)
     instrumentPage = urllib3.PoolManager().request ("GET", queryURL)
     soup = BeautifulSoup(instrumentPage.data, "html.parser")
-    divMain = soup.find ("div", id="Main").findAll("a")
-    return [n.text for n in divMain]
+    try:
+      divMain = soup.find ("div", id="Main").findAll("a")
+      return [n.text.encode("ascii") for n in divMain]
+    except AttributeError:
+      return []

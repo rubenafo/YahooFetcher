@@ -3,10 +3,11 @@
 # Licensed under the Apache License (see the LICENSE file)
 #
 
-import csv;
-import urllib2;
-import QueryBuilder;
-from urllib2 import *;
+import csv
+import urllib2
+import QueryBuilder
+from ComponentsExtractor import ComponentsExtractor
+from urllib2 import *
 
 #
 # This class invokes a query builder, fetches the content from the received URL
@@ -147,3 +148,5 @@ class YahooFetcher:
     urldata = urllib2.urlopen (url)
     return list(csv.reader (urldata.read().splitlines()))
 
+  def getComponents(self, index):
+    return ComponentsExtractor().getComponents(index);
