@@ -2,7 +2,7 @@ YahooFetcher
 ===============
 
 A Python class to extract stock data from famous Yahoo Finance API.
-Last update fixes the new Yahoo Finance API workaround that had to be implemented after 17th May when Yahoo decided to change the whole structure.
+Last update fixes the new Yahoo Finance API workaround that had to be implemented after 17th May when Yahoo decided to change the whole structure of the API without further notice.
 
 Features:
   * eod quotes, dividends and splits information
@@ -29,10 +29,10 @@ The output will look like
 [{'c': 175.800003, 'v': 4094800, 'ticker': 'IBM', 'h': 177.070007, 'adjc': 175.800003, 'l': 174.580002, 'date': '2017-01-30', 'o': 176.979996},
 ...]
 ```
+Index underlying components
+===========================
 
-Quotes, Dividends
-
-It also provides a method to extract the underlying components of an index (up to 30):
+YahooFetcher also provides a method to extract the underlying components of an index (up to 30), given its Yahoo ticker:
 ```python
 print YahooQuery().getComponents("DJI")
 
