@@ -4,7 +4,7 @@
 #
 
 import csv
-import QueryBuilder
+from QueryBuilder import *
 from ComponentsExtractor import ComponentsExtractor
 from urllib3 import *
 import urllib
@@ -17,7 +17,7 @@ import urllib
 class YahooFetcher:
 
   def __init__(self):
-    self.query = QueryBuilder.Query ()
+    self.query = Query ()
 
   #
   # Gets historical data in json format.
@@ -30,6 +30,8 @@ class YahooFetcher:
     jsonList = [];
     if event == "quote":
       for elem in fullData[1:]:
+        if len([n for n in elem if n == 'null']) > 0:
+          continue
         json = {'date': elem[0], 'o': float(elem[1]), 'h': float(elem[2]), 'l': float(elem[3]), \
             'c': float(elem[4]), 'adjc': float(elem[5]), 'v': int(elem[6]), "ticker":symbol};
         jsonList.append(json)
@@ -39,5 +41,8 @@ class YahooFetcher:
         json = {"date":elem[0], event:float(elem[1])}
         jsonList.append(json)
       return jsonList
+
   def getComponents(self, index):
     return ComponentsExtractor().getComponents(index);
+
+    

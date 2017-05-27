@@ -25,7 +25,7 @@ class ComponentsExtractor:
     soup = BeautifulSoup(instrumentPage.data, "html.parser")
     try:
       divMain = soup.find ("div", id="Main").findAll("a")
-      return [n.text.encode("ascii") for n in divMain]
+      return [n.text.encode("ascii").decode("UTF-8") for n in divMain]
     except AttributeError:
       return []
 

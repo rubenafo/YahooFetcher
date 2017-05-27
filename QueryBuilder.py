@@ -15,7 +15,7 @@ class Query:
   BASE_URL = "http://finance.yahoo.com/quote/AAPL"
   HIST_URL = "https://query1.finance.yahoo.com/v7/finance/download/{}?{}";
 
-  def __init__(self):
+  def refreshCookie (self):
     self.cookie = None
     self.crub = None
     cookier = urllib.request.HTTPCookieProcessor()
@@ -37,6 +37,9 @@ class Query:
         continue
       self.cookie = c.value
 
+  def __init__(self):
+    self.refreshCookie()
+
   #
   # Historical data methods
   #
@@ -55,9 +58,18 @@ class Query:
       param['events'] = 'div'
     elif event == 'split':
       param['events'] = 'split'
-    param['crumb'] = self.crumb
-    params = urllib.parse.urlencode(param)
-    url = 'https://query1.finance.yahoo.com/v7/finance/download/{}?{}'.format(symbol, params)
-    f = urllib.request.urlopen(url)
-    alines = f.readlines()
-    return [a.decode("UTF-8").strip() for a in alines[1:] if len(a) > 0]
+    
+    for i in [1,5]:
+      try:
+        param['crumb'] = self.crumb
+        params = urllib.parse.urlencode(param)
+        url = 'https://query1.finance.yahoo.com/v7/finance/download/{}?{}'.format(symbol, params)
+        f = urllib.request.urlopen(url)
+        alines = f.readlines()
+        return [a.decode("UTF-8").strip() for a in alines[1:] if len(a) > 0]
+      except (urllib.error.HTTPError, urllib.error.URLError):
+        # this handles the spurious HTTPError unauthorized, perhaps the yahoo side didn't process the cookie
+        # so the crumb gets rejected. 5 times for this should be enough
+        self.refreshCookie()
+    print ("Warning: unable to retrieve Yahoo data for " + symbol)
+    return []
