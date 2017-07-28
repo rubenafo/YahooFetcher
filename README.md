@@ -1,7 +1,7 @@
 YahooFetcher
 ===============
 
-A Python class to extract stock data from famous Yahoo Finance API.
+A simple Python class to retrieve stock data from famous Yahoo Finance API.
 Last update fixes the new Yahoo Finance API workaround that had to be implemented after 17th May when Yahoo decided to change the whole structure.
 
 Features:
@@ -30,9 +30,7 @@ The output will look like
 ...]
 ```
 
-Quotes, Dividends
-
-It also provides a method to extract the underlying components of an index (up to 30):
+It also provides a method to extract the underlying components of an index (up to 30 components):
 ```python
 print YahooQuery().getComponents("DJI")
 
