@@ -2,12 +2,8 @@
 # Copyright 2017, Ruben Afonso - http://www.github.com/rubenafo
 # Licensed under the Apache License (see the LICENSE file)
 #
-
-import csv
-from QueryBuilder import *
-from ComponentsExtractor import ComponentsExtractor
-from urllib3 import *
-import urllib
+from . import QueryBuilder
+from . import ComponentsExtractor
 
 #
 # This class invokes a query builder, fetches the content from the received URL
@@ -17,7 +13,7 @@ import urllib
 class YahooFetcher:
 
   def __init__(self):
-    self.query = Query ()
+    self.query = QueryBuilder.Query ()
 
   #
   # Gets historical data in json format.
@@ -26,12 +22,10 @@ class YahooFetcher:
   #
   def getHistAsJson (self, symbol, startDate, endDate, event="quote"):
     rows = self.query.getHistURL(symbol, startDate, endDate, event)
-    fullData = [data.split(",") for data in rows[1:]]
+    fullData = [data.split(",") for data in rows]
     jsonList = [];
     if event == "quote":
-      for elem in fullData[1:]:
-        if len([n for n in elem if n == 'null']) > 0:
-          continue
+      for elem in fullData:
         json = {'date': elem[0], 'o': float(elem[1]), 'h': float(elem[2]), 'l': float(elem[3]), \
             'c': float(elem[4]), 'adjc': float(elem[5]), 'v': int(elem[6]), "ticker":symbol};
         jsonList.append(json)
@@ -45,4 +39,3 @@ class YahooFetcher:
   def getComponents(self, index):
     return ComponentsExtractor().getComponents(index);
 
-    
