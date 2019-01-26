@@ -1,9 +1,9 @@
 #
-# Copyright 2017, Ruben Afonso - http://www.github.com/rubenafo
+# Copyright 2019, Ruben Afonso - http://www.github.com/rubenafo
 # Licensed under the Apache License (see the LICENSE file)
 #
-from . import QueryBuilder
-from . import ComponentsExtractor
+import QueryBuilder
+import ComponentsExtractor
 
 #
 # This class invokes a query builder, fetches the content from the received URL
@@ -13,7 +13,7 @@ from . import ComponentsExtractor
 class YahooFetcher:
 
   def __init__(self):
-    self.query = QueryBuilder.Query ()
+    self.query = QueryBuilder.Query()
 
   #
   # Gets historical data in json format.
@@ -26,8 +26,14 @@ class YahooFetcher:
     jsonList = [];
     if event == "quote":
       for elem in fullData:
-        json = {'date': elem[0], 'o': float(elem[1]), 'h': float(elem[2]), 'l': float(elem[3]), \
-            'c': float(elem[4]), 'adjc': float(elem[5]), 'v': int(elem[6]), "ticker":symbol};
+        json = {'date': elem[0],
+                'o': float(elem[1]) if elem[1] != 'null' else 0,
+                'h': float(elem[2]) if elem[2] != 'null' else 0,
+                'l': float(elem[3]) if elem[3] != 'null' else 0,
+                'c': float(elem[4]) if elem[4] != 'null' else 0,
+                'adjc': float(elem[5]) if elem[5] != 'null' else 0,
+                'v': int(elem[6]) if elem[6] != 'null' else 0,
+                "ticker":symbol};
         jsonList.append(json)
       return jsonList
     elif event == "div" or event == "split":

@@ -1,5 +1,5 @@
 #
-# Copyright 2017, Ruben Afonso - http://www.github.com/rubenafo
+# Copyright 2019, Ruben Afonso - http://www.github.com/rubenafo
 # Licensed under the Apache License (see the LICENSE file)
 #
 
