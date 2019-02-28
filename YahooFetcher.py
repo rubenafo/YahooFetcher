@@ -2,7 +2,7 @@
 # Copyright 2019, Ruben Afonso - http://www.github.com/rubenafo
 # Licensed under the Apache License (see the LICENSE file)
 #
-import QueryBuilder
+from QueryBuilder import Query
 import ComponentsExtractor
 
 #
@@ -13,15 +13,15 @@ import ComponentsExtractor
 class YahooFetcher:
 
   def __init__(self):
-    self.query = QueryBuilder.Query()
+    self.query = Query()
 
   #
   # Gets historical data in json format.
   #
   # Output: ticker, date, open, high, low, close, volume, adjusted close
   #
-  def getHistAsJson (self, symbol, startDate, endDate, event="quote"):
-    rows = self.query.getHistURL(symbol, startDate, endDate, event)
+  def getHistAsJson (self, symbol, startDate, endDate, event="quote", verbose=False):
+    rows = self.query.getHistURL(symbol, startDate, endDate, event, verbose)
     fullData = [data.split(",") for data in rows]
     jsonList = [];
     if event == "quote":

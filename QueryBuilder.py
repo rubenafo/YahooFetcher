@@ -7,7 +7,7 @@
 # This class builds the URL using Yahoo conventions.
 #
 
-import urllib
+import urllib.request
 from datetime import datetime
 
 class Query:
@@ -45,7 +45,7 @@ class Query:
   #
 
   # Date params are in format yyyymmdd
-  def getHistURL (self, symbol, begindate, enddate, event):
+  def getHistURL (self, symbol, begindate, enddate, event, verbose=False):
     tb = datetime(int(begindate[0:4]), int(begindate[4:6]), int(begindate[6:8]), 0, 0)
     te = datetime(int(enddate[0:4]), int(enddate[4:6]), int(enddate[6:8]), 0, 0)
     param = dict()
@@ -63,7 +63,9 @@ class Query:
       try:
         param['crumb'] = self.crumb
         params = urllib.parse.urlencode(param)
-        url = 'https://query1.finance.yahoo.com/v7/finance/download/{}?{}'.format(symbol, params)
+        url = self.HIST_URL.format(symbol, params)
+        if verbose:
+          print (url)
         f = urllib.request.urlopen(url)
         alines = f.readlines()
         return [a.decode("UTF-8").strip() for a in alines[1:] if len(a) > 0]

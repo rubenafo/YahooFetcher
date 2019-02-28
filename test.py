@@ -8,8 +8,8 @@
 import YahooFetcher
 import ComponentsExtractor
 
-c = ComponentsExtractor.ComponentsExtractor()
+c = ComponentsExtractor.ComponentsExtractor(verbose=True)
 #ex = c.getExchange("mse")
-ex = c.getExchange("nasdaq")
+ex = c.getComponents("nasdaq")
 for e in ex:
   print e

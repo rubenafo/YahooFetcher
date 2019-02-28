@@ -12,15 +12,18 @@ import urllib3
 
 class ComponentsExtractor:
 
+  STOCK_LIST_URL = "http://www.eoddata.com/stocklist/_EXCHANGE_ID_/_L_.htm"
   BASE_URL="https://finance.yahoo.com/quote/^_INDEX_/components?p=^_INDEX_"
 
-  def __init__(self):
-    None
+  def __init__(self, verbose=False):
+    self.verbose = verbose
 
   # Extracts the index constituent data (limited to 30 underlying secs)
   # Check the list in globalIndexes file
   def getComponents (self, index):
     queryURL = self.BASE_URL.replace ("_INDEX_", index)
+    if self.verbose:
+      print(queryURL)
     instrumentPage = urllib3.PoolManager().request ("GET", queryURL)
     soup = BeautifulSoup(instrumentPage.data, "html.parser")
     try:
@@ -29,15 +32,16 @@ class ComponentsExtractor:
     except AttributeError:
       return []
 
-  # Extracts the stocks listed in a stock from eoddata.com
+  # Extracts the stocks listed in an exchange from eoddata.com
   # Check the list in the exchanges file
   # 
   def getExchange (self, exch):
-    BASE_URL = "http://www.eoddata.com/stocklist/_EXCHANGE_ID_/_L_.htm"
-    exchangeUrl = BASE_URL.replace("_EXCHANGE_ID_", exch);
+    exchangeUrl = self.STOCK_LIST_URL.replace("_EXCHANGE_ID_", exch);
     exchangeStocks = []
     for one in range(97,123): # a .. z 123
       url = exchangeUrl.replace("_L_", chr(one))
+      if self.verbose:
+        print(url)
       quotesPage = urllib3.PoolManager().request("GET", url)
       soup = BeautifulSoup(quotesPage.data, "html.parser")
       try:

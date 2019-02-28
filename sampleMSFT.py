@@ -1,4 +1,4 @@
-#!/usr/bin/python3.5
+#!/usr/bin/python3.6
 
 #
 # Copyright 2017, Ruben Afonso - http://www.github.com/rubenafo
@@ -8,5 +8,5 @@
 import YahooFetcher
 
 y = YahooFetcher.YahooFetcher()
-print (y.getHistAsJson ('IBM','20160101','20161231'))
+print (y.getHistAsJson ('MSFT','20160101','20161231', verbose=True))
 
